@@ -63,9 +63,30 @@ const getRandomWallpapers = async (req, res) => {
   }
 };
 
+const getWallpapersByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+    const wallpapers = await WallpaperModel.find({ category }).populate(
+      "category"
+    );
+
+    if (!wallpapers.length) {
+      return res
+        .status(404)
+        .json({ message: "No wallpapers found for this category." });
+    }
+
+    return res.status(200).json(wallpapers);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
+
 module.exports = {
   addWallpaper,
   getAllWallpapers,
   getWallpaperById,
   getRandomWallpapers,
+  getWallpapersByCategory,
 };
