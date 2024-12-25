@@ -1,4 +1,5 @@
 const WallpaperModel = require("../models/Wallpaper");
+const applyPagination = require("../utils/Panigate");
 
 const addWallpaper = async (req, res) => {
   try {
@@ -23,12 +24,19 @@ const addWallpaper = async (req, res) => {
   }
 };
 
-// Get all wallpapers
 const getAllWallpapers = async (req, res) => {
   try {
     console.log("in api");
+    const { page = 1, limit = 12 } = req.query;
     const wallpapers = await WallpaperModel.find().populate("category");
-    return res.status(200).json(wallpapers);
+    const paginatedResult = applyPagination(wallpapers, page, limit);
+    return res.status(200).json({
+      wallpapers: paginatedResult.data,
+      currentPage: paginatedResult.currentPage,
+      totalPages: paginatedResult.totalPages,
+      dataPerPage: paginatedResult.dataPerPage,
+      hasMore: paginatedResult.moreData,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error." });
