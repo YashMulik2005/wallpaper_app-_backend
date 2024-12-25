@@ -27,15 +27,15 @@ const addWallpaper = async (req, res) => {
 const getAllWallpapers = async (req, res) => {
   try {
     console.log("in api");
-    // const { page = 1, limit = 12 } = req.query;
+    const { page = 1, limit = 12 } = req.query;
     const wallpapers = await WallpaperModel.find().populate("category");
-    // const paginatedResult = applyPagination(wallpapers, page, limit);
+    const paginatedResult = applyPagination(wallpapers, page, limit);
     return res.status(200).json({
-      wallpapers: wallpapers,
-      // currentPage: paginatedResult.currentPage,
-      // totalPages: paginatedResult.totalPages,
-      // dataPerPage: paginatedResult.dataPerPage,
-      // hasMore: paginatedResult.moreData,
+      wallpapers: paginatedResult.data,
+      currentPage: paginatedResult.currentPage,
+      totalPages: paginatedResult.totalPages,
+      dataPerPage: paginatedResult.dataPerPage,
+      hasMore: paginatedResult.moreData,
     });
   } catch (error) {
     console.error(error);
