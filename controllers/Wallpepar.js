@@ -24,22 +24,57 @@ const addWallpaper = async (req, res) => {
   }
 };
 
+// const getAllWallpapers = async (req, res) => {
+//   try {
+//     console.log("in api");
+//     const { page = 1, limit = 12 } = req.query;
+//     const wallpapers = await WallpaperModel.find().populate("category");
+//     const paginatedResult = applyPagination(wallpapers, page, limit);
+//     return res.status(200).json({
+//       wallpapers: paginatedResult.data,
+//       currentPage: paginatedResult.currentPage,
+//       totalPages: paginatedResult.totalPages,
+//       dataPerPage: paginatedResult.dataPerPage,
+//       hasMore: paginatedResult.moreData,
+//       link: paginatedResult.link,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// };
+
 const getAllWallpapers = async (req, res) => {
   try {
-    console.log("in api");
-    const { page = 1, limit = 12 } = req.query;
-    const wallpapers = await WallpaperModel.find().populate("category");
-    const paginatedResult = applyPagination(wallpapers, page, limit);
+    console.log("Fetching random wallpapers");
+    // const { page = 1, limit = 12 } = req.query;
+    const wallpapers = await WallpaperModel.aggregate([
+      { $sample: { size: 48 } },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+    ]);
+    // const paginatedResult = applyPagination(wallpapers, page, limit);
+    // return res.status(200).json({
+    //   wallpapers: paginatedResult.data,
+    //   currentPage: paginatedResult.currentPage,
+    //   totalPages: paginatedResult.totalPages,
+    //   dataPerPage: paginatedResult.dataPerPage,
+    //   hasMore: paginatedResult.moreData,
+    //   link: paginatedResult.link,
+    // });
+
     return res.status(200).json({
-      wallpapers: paginatedResult.data,
-      currentPage: paginatedResult.currentPage,
-      totalPages: paginatedResult.totalPages,
-      dataPerPage: paginatedResult.dataPerPage,
-      hasMore: paginatedResult.moreData,
-      link: paginatedResult.link,
+      wallpapers,
+      message: "Successfully fetched 50 random wallpapers with categories.",
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching wallpapers:", error);
     return res.status(500).json({ message: "Server error." });
   }
 };
