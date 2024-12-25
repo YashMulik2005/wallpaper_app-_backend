@@ -14,7 +14,7 @@ const applyPagination = (data, page, limit = 12) => {
     moreData: page < totalPages,
     link:
       page < totalPages
-        ? `http://localhost:3000/api/wallpaper/wallpapers?page=${
+        ? `https://wallpaper-app-backend.vercel.app/api/wallpaper/wallpapers?page=${
             Number(page) + 1
           }`
         : null,
