@@ -36,6 +36,7 @@ const getAllWallpapers = async (req, res) => {
       totalPages: paginatedResult.totalPages,
       dataPerPage: paginatedResult.dataPerPage,
       hasMore: paginatedResult.moreData,
+      link: paginatedResult.link,
     });
   } catch (error) {
     console.error(error);
