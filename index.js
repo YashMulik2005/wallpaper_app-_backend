@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const categoryRoutes = require("./routes/Category");
 const wallpaperRoutes = require("./routes/Wallpaper");
+const userRoutes = require("./routes/User");
+const FavouriteRoutes = require("./routes/Favourite");
 
 const cors = require("cors");
 app.use(
@@ -31,6 +33,8 @@ mongoose
 
 app.use("/api/category", categoryRoutes);
 app.use("/api/wallpaper", wallpaperRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/Favourite", FavouriteRoutes);
 
 app.listen(3000, () => {
   console.log("server is running.");
