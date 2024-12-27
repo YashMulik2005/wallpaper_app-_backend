@@ -4,16 +4,21 @@ const jwt = require("jsonwebtoken");
 
 exports.signup = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required." });
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
     }
 
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
     }
+
+    const username = email.split("@")[0];
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new UserModel({
