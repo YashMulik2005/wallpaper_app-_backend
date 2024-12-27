@@ -57,3 +57,26 @@ exports.getUserFavourites = async (req, res) => {
     res.status(500).json({ message: "Server error.", error: error.message });
   }
 };
+
+exports.removeFavourite = async (req, res) => {
+  try {
+    const { wallpaperId } = req.body;
+
+    if (!wallpaperId) {
+      return res.status(400).json({ message: "Wallpaper ID is required." });
+    }
+
+    const favourite = await FavouriteModel.findOneAndDelete({
+      user: req.user.id,
+      wallpaper: wallpaperId,
+    });
+
+    if (!favourite) {
+      return res.status(404).json({ message: "Favourite not found." });
+    }
+
+    res.status(200).json({ message: "Favourite removed successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Server error.", error: error.message });
+  }
+};
