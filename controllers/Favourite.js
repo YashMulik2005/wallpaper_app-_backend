@@ -42,7 +42,9 @@ exports.getUserFavourites = async (req, res) => {
   try {
     const favourites = await FavouriteModel.find({ user: req.user.id })
       .populate("wallpaper", "image category")
-      .populate("user", "username email");
+      .populate("user", "username email")
+      .sort({ timestamp: -1 })
+      .limit(24);
 
     if (!favourites.length) {
       return res
