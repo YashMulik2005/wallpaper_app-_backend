@@ -1,5 +1,6 @@
 const WallpaperModel = require("../models/Wallpaper");
 const applyPagination = require("../utils/Panigate");
+const FavouriteModel = require("../models/Favourite");
 
 const addWallpaper = async (req, res) => {
   try {
@@ -82,13 +83,23 @@ const getAllWallpapers = async (req, res) => {
 const getWallpaperById = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id;
+
     const wallpaper = await WallpaperModel.findById(id).populate("category");
 
     if (!wallpaper) {
       return res.status(404).json({ message: "Wallpaper not found." });
     }
 
-    return res.status(200).json(wallpaper);
+    const isFavorite = await FavouriteModel.exists({
+      user: userId,
+      wallpaper: id,
+    });
+
+    return res.status(200).json({
+      wallpaper,
+      favorite: !!isFavorite,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error." });
